@@ -5,30 +5,26 @@ pipeline {
         timestamps()
     }
     stages {
-        stage('build') {
-            parallel {
-                stage("Build Android")
-                {
-                    steps {
-                        sh 'echo Aca hacemos el build para Android, por ejemplo con gradle'
-                    }
-                }
-                stage("Build iOS")
-                {
-                    steps {
-                        sh 'echo Aca hacemos el build para iOS, por ejemplo con XCode'
-                    }
+        stage('Deploy') {
+            environment {
+                SUPER_SECRET = credentials("user-pass-secreto")
+            }
+            input {
+                message "Seleccione ambiente"
+                ok "Desplegar!"
+                //submitter "dblandit" <-- Podriamos indicar quien puede contestar
+                parameters {
+                    choice(name: 'AMBIENTE', choices: ['Dev', 'Staging', 'Prod'], description: 'A qué ambiente desplegamos?')
                 }
             }
-        }
-        stage('Test') {
             steps {
-                sh 'echo Hola Mundo > hola.txt'
-            }
-            post {
-                always {
-                    archiveArtifacts 'hola.txt'
-                }
+                sh "echo ${AMBIENTE}"
+                sh "echo $AMBIENTE"
+                sh "echo $SUPER_SECRET_USR"
+                sh "echo $SUPER_SECRET_PSW"
+                sh 'echo $SUPER_SECRET_USR'
+                sh 'echo $SUPER_SECRET_PSW'
+                sh 'echo $AMBIENTE'
             }
         }
     }
