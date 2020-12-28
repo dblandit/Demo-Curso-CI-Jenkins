@@ -10,5 +10,10 @@ pipeline {
                 sh 'npm install'
             }
         }
+        stage('build secuencial') {
+            steps {
+                sh 'echo Hacemos otro build pero secuencial!'
+            }
+        }
     }
 }
