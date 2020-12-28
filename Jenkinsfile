@@ -21,5 +21,16 @@ pipeline {
                 }
             }
         }
+        stage('Test') {
+            steps {
+                sh 'echo Hola Mundo > hola.txt'
+            }
+            post {
+                always {
+                    archiveArtifacts 'hola.txt'
+                }
+            }
+        }
     }
 }
+
