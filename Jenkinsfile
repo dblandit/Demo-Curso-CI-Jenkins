@@ -6,13 +6,19 @@ pipeline {
     }
     stages {
         stage('build') {
-            steps {
-                sh 'npm install'
-            }
-        }
-        stage('build secuencial') {
-            steps {
-                sh 'echo Hacemos otro build pero secuencial!'
+            parallel {
+                stage("Build Android")
+                {
+                    steps {
+                        sh 'echo Aca hacemos el build para Android, por ejemplo con gradle'
+                    }
+                }
+                stage("Build iOS")
+                {
+                    steps {
+                        sh 'echo Aca hacemos el build para iOS, por ejemplo con XCode'
+                    }
+                }
             }
         }
     }
