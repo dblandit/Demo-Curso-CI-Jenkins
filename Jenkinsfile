@@ -5,26 +5,25 @@ pipeline {
         timestamps()
     }
     stages {
-        stage('Deploy') {
-            environment {
-                SUPER_SECRET = credentials("user-pass-secreto")
-            }
-            input {
-                message "Seleccione ambiente"
-                ok "Desplegar!"
-                //submitter "dblandit" <-- Podriamos indicar quien puede contestar
-                parameters {
-                    choice(name: 'AMBIENTE', choices: ['Dev', 'Staging', 'Prod'], description: 'A qué ambiente desplegamos?')
-                }
-            }
+        stage("Docker image") {
+            agent { docker { image 'docker:19.03.12' } }
+            //Podríamos limitar cuándo correr
+            // when {
+            //   anyOf {
+            //     branch 'dev'
+            //     branch 'master'
+            //    }
+            // }
             steps {
-                sh "echo ${AMBIENTE}"
-                sh "echo $AMBIENTE"
-                sh "echo $SUPER_SECRET_USR"
-                sh "echo $SUPER_SECRET_PSW"
-                sh 'echo $SUPER_SECRET_USR'
-                sh 'echo $SUPER_SECRET_PSW'
-                sh 'echo $AMBIENTE'
+                
+                script {
+                    docker.withRegistry('https://registry.gitlab.com', 'gitlab-registry') {
+
+                        def imagenDocker = docker.build("registry.gitlab.com/dblandit-open-workshops/curso-ci-jenkins:${BUILD_TAG}")
+
+                        imagenDocker.push()
+                    }
+                }
             }
         }
     }
