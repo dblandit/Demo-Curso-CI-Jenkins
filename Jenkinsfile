@@ -1,5 +1,8 @@
 pipeline {
-    agent { docker { image 'node:12.18.4' } }
+    agent { docker { 
+        image 'node:12.18.4' 
+        args '--network=mongotesting'
+    } }
     options {
         timeout(time: 1, unit: 'HOURS') 
         timestamps()
